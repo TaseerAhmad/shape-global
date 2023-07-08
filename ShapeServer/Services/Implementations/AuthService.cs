@@ -16,16 +16,23 @@ namespace ShapeServer.Services.Implementations
 
         public async Task<ServiceResult<object>> Signup(SignupRequest signupRequest)
         {
+            var errors = new Lazy<Dictionary<string, string[]>>();
+
             var hasEmailConflict = await _dbContext.Users
                 .Where(u => u.Email == signupRequest.Email)
                 .AnyAsync();
 
             if (hasEmailConflict)
             {
+                var conflictMessage = "Email is already registered";
+                errors.Value.Add(nameof(signupRequest.Email), new[] { conflictMessage });
+
                 return new ServiceResult<object>(
                     success: false,
-                    message: "Email is already registered",
-                    error: ServiceError.EmailConflict
+                    resultTitle: "Entry failed because the resource that already exists.",
+                    message: conflictMessage,
+                    errorType: ServiceErrorType.EmailConflict,
+                    errors: errors.Value
                     );
             }
 
@@ -40,7 +47,11 @@ namespace ShapeServer.Services.Implementations
             _dbContext.Users.Add(newUser);
             await _dbContext.SaveChangesAsync();
 
-            return new ServiceResult<object>(success: true, message: "Account created");
+            return new ServiceResult<object>(
+                success: true,
+                resultTitle: "Resource created.",
+                message: "Account created",
+                result: true);
         }
     }
 }

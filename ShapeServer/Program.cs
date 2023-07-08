@@ -4,6 +4,7 @@ using ShapeServer.Models.DTO.SignupRequest;
 using ShapeServer.Models.Validations;
 using ShapeServer.Services;
 using ShapeServer.Services.Implementations;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,11 @@ builder.Services.AddScoped<IValidator<SignupRequest>, SignupValidator>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 var app = builder.Build();
 
