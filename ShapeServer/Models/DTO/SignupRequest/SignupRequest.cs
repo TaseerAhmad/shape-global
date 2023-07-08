@@ -2,7 +2,6 @@
 
 namespace ShapeServer.Models.DTO.SignupRequest
 {
-    [BindRequired]
     public record SignupRequest(
         string FirstName,
         string LastName,
