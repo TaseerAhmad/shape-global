@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShapeServer.Helpers;
 using ShapeServer.Models.DTO.SignupRequest;
+using ShapeServer.Services;
 
 namespace ShapeServer.Controllers
 {
@@ -10,10 +11,12 @@ namespace ShapeServer.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IValidator<SignupRequest> _validator;
+        private readonly IAuthService _authService;
 
-        public AuthController(IValidator<SignupRequest> validator)
+        public AuthController(IValidator<SignupRequest> validator, IAuthService authService)
         {
             _validator = validator;
+            _authService = authService;
         }
 
         [HttpPost("Signup")]
@@ -26,7 +29,16 @@ namespace ShapeServer.Controllers
                 return BadRequest(errors);
             }
 
-            throw new NotImplementedException();
+            var serviceResult = await _authService.Signup(signupRequest);
+            if (!serviceResult.Success)
+            {
+                switch (serviceResult.Error)
+                {
+                    case ServiceError.EmailConflict: return Conflict(new { Email = serviceResult.Message });
+                }
+            }
+
+            return Created(string.Empty, true);
         }
     }
 }
