@@ -73,11 +73,16 @@ const InputType = {
     firstNameValidation.innerHTML = '';
     lastNameValidation.innerHTML = '';
   
+    firstNameInput.classList.remove('is-invalid');
     firstNameInput.classList.remove('is-valid');
     lastNameInput.classList.remove('is-valid');
+    lastNameInput.classList.remove('is-invalid');
     emailInput.classList.remove('is-valid');
+    emailInput.classList.remove('is-invalid')
     passwordInput.classList.remove('is-invalid');
+    passwordInput.classList.remove('is-valid');
     confirmPasswordInput.classList.remove('is-invalid');
+    confirmPasswordInput.classList.remove('is-valid');
   
     const form = document.getElementById('form');
     form.classList.remove('was-validated');
@@ -88,10 +93,43 @@ const InputType = {
     spinner.hidden = !show;
     signupButton.disabled = show;
   }
+
+  function highlightFirstNameError(msg) {
+    const elm = document.getElementById('firstNameValidation');
+    elm.innerHTML = msg;
+    firstNameInput.classList.add('is-invalid');
+  }
+
+  function highlightLastNameError(msg) {
+    const elm = document.getElementById('lastNameValidation');
+    elm.innerHTML = msg;
+    lastNameInput.classList.add('is-invalid');
+  }
+
+  function highlightEmailError(msg) {
+    const elm = document.getElementById('emailValidation');
+    elm.innerHTML = msg;
+    emailInput.classList.add('is-invalid');
+  }
+
+  function highLightFormErrors(errors) {
+    Object.entries(errors).forEach(entry => {
+      
+      switch(entry[0].toUpperCase()) {
+        case 'PASSWORD': highlightPasswordError(entry[1][0]);
+        break;
+        case 'FIRSTNAME': highlightFirstNameError(entry[1][0]);
+        break;
+        case 'LASTNAME': highlightLastNameError(entry[1][0]);
+        break;
+        case 'EMAIL': highlightEmailError(entry[1][0]);
+      }
+    });
+  }
   
   async function sendSignupRequest(data) {
     try {
-      const response = await fetch('https://localhost:7062/Auth/Signup', {
+      const response = await fetch('https://localhost:7085/api/Auth/Signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -100,10 +138,13 @@ const InputType = {
       });
   
       const responseData = await response.json();
-      if (responseData) {
-        
-      } 
-  
+
+      if (!response.ok) {
+        highLightFormErrors(responseData.errors);
+      } else {
+        alert('Signup successful');
+      }
+
       enableSpinner(false);
   
     } catch (error) {
