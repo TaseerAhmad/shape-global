@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace ShapeServer.DTO.SignupRequest
+namespace ShapeServer.Models.DTO.SignupRequest
 {
     [BindRequired]
-    public record SignupRequestDto(
+    public record SignupRequest(
         string FirstName,
         string LastName,
         string Email,

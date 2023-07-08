@@ -1,6 +1,12 @@
+using FluentValidation;
+using ShapeServer.Models.DTO.SignupRequest;
+using ShapeServer.Models.Validations;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddScoped<IValidator<SignupRequest>, SignupValidator>();
 
 builder.Services.AddControllers();
 
