@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ShapeServer.Models;
+using ShapeServer.Models.Configurations;
 
 namespace ShapeServer
 {
@@ -14,5 +16,12 @@ namespace ShapeServer
         {
             optionsBuilder.UseNpgsql(_configuration.GetConnectionString("Database"));
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+        }
+
+        public DbSet<User> Users { get; set; }
     }
 }

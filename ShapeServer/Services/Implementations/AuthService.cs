@@ -4,6 +4,13 @@ namespace ShapeServer.Services.Implementations
 {
     public class AuthService : IAuthService
     {
+        private readonly ShapeContext _dbContext;
+
+        public AuthService(ShapeContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         public async Task<ServiceResult<object>> Signup(SignupRequest signupRequest)
         {
             //Check if email already exists
