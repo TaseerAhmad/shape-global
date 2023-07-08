@@ -29,7 +29,7 @@ namespace ShapeServer.Services.Implementations
 
                 return new ServiceResult<object>(
                     success: false,
-                    resultTitle: "Entry failed because the resource that already exists.",
+                    resultTitle: "Entry failed because the resource already exists.",
                     message: conflictMessage,
                     errorType: ServiceErrorType.EmailConflict,
                     errors: errors.Value
