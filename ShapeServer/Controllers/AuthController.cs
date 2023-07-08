@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShapeServer.Helpers;
 using ShapeServer.Models.DTO.SignupRequest;
 using ShapeServer.Services;
+using System.Net;
 
 namespace ShapeServer.Controllers
 {
@@ -26,19 +27,21 @@ namespace ShapeServer.Controllers
             if (!validationResult.IsValid)
             {
                 var errors = ValidationError.GetErrors(validationResult.Errors);
-                return BadRequest(errors);
+                var apiResponse = ApiResponseGenerator.GenerateApiResponse(errors, (int)HttpStatusCode.BadRequest);
+                return BadRequest(apiResponse);
             }
 
             var serviceResult = await _authService.Signup(signupRequest);
             if (!serviceResult.Success)
             {
-                switch (serviceResult.Error)
+                switch (serviceResult.ErrorType)
                 {
-                    case ServiceError.EmailConflict: return Conflict(new { Email = serviceResult.Message });
+                    case ServiceErrorType.EmailConflict:
+                        return Conflict(ApiResponseGenerator.GenerateApiResponse(serviceResult, (int)HttpStatusCode.Conflict));
                 }
             }
 
-            return Created(string.Empty, true);
+            return Created(string.Empty, serviceResult.Result);
         }
     }
 }

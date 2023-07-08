@@ -1,6 +1,6 @@
 ﻿namespace ShapeServer.Helpers
 {
-    public enum ServiceError
+    public enum ServiceErrorType
     {
         EmailConflict
     }
