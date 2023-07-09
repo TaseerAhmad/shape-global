@@ -1,5 +1,6 @@
 using FluentValidation;
 using ShapeServer;
+using ShapeServer.Exceptions;
 using ShapeServer.Models.DTO.SignupRequest;
 using ShapeServer.Models.Validations;
 using ShapeServer.Services;
@@ -22,6 +23,8 @@ builder.Services.AddControllers()
     });
 
 var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionHandler>();
 
 // Configure the HTTP request pipeline.
 app.UseCors(builder =>
