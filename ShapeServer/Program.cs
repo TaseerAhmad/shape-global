@@ -24,9 +24,9 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 app.UseMiddleware<GlobalExceptionHandler>();
 
-// Configure the HTTP request pipeline.
 app.UseCors(builder =>
 {
     builder.AllowAnyOrigin();
